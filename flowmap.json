@@ -5,31 +5,47 @@
   "projection": {"type": "equalEarth"},
   "layer": [
     {
+      "data": {"graticule": {"step": [30, 30]}},
+      "mark": {"type": "geoshape", "stroke": "black", "fill": null}
+    },
+    {
       "data": {
         "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/world-110m.json",
         "format": {"type": "topojson", "feature": "countries"}
       },
-      "mark": {"type": "geoshape", "fill": "#e0e0e0", "stroke": "white"}
+      "mark": {"type": "geoshape", "fill": "white", "stroke": "black"}
     },
     {
       "data": {"url": "bird_migration_dataset.csv"},
+      "params": [
+        {
+          "name": "speciesFilter",
+          "select": {"type": "point", "fields": ["Species"]}, 
+          "bind": "legend"
+        }
+      ],
       "mark": {
-        "type": "rule",
-        "strokeWidth": 1,
-        "strokeOpacity": 0.6
+        "type": "line",
+        "strokeOpacity": 1,
+        "strokeWidth": 1.5
       },
       "encoding": {
         "longitude": {"field": "Start_Longitude", "type": "quantitative"},
         "latitude": {"field": "Start_Latitude", "type": "quantitative"},
         "longitude2": {"field": "End_Longitude"},
         "latitude2": {"field": "End_Latitude"},
-        "color": {"field": "Species", "type": "nominal", "legend": {"title": "Species"}},
+        "detail": {"field": "Bird_ID"},
+        "color": {"field": "Species", "type": "nominal", "legend": {"title": "Species (Click to filter)"}},
         "tooltip": [
           {"field": "Species"},
           {"field": "Migration_Reason"},
           {"field": "Flight_Distance_km"},
           {"field": "Flight_Duration_hours"}
-        ]
+        ],
+        "opacity": {
+          "condition": {"param": "speciesFilter", "value": 1},
+          "value": 0.1
+        }
       }
     }
   ]
