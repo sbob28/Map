@@ -1,0 +1,53 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Flight Duration vs Distance by Species",
+    "subtitle": "Most birds fly between 1000–4000 km over 20–80 hours — patterns vary by species"
+  },
+  "data": { "url": "bird_migration_data.csv" },
+  "transform": [
+    {
+      "filter": "datum.Flight_Duration_hours > 0"
+    }
+  ],
+  "mark": {
+    "type": "circle",
+    "opacity": 0.6,
+    "size": 40,
+    "stroke": "black",
+    "strokeWidth": 0.2
+  },
+  "encoding": {
+    "x": {
+      "field": "Flight_Duration_hours",
+      "type": "quantitative",
+      "title": "Flight Duration (hours)",
+      "scale": { "domain": [0, 95] }
+    },
+    "y": {
+      "field": "Flight_Distance_km",
+      "type": "quantitative",
+      "title": "Flight Distance (km)",
+      "scale": { "domain": [0, 5000] }
+    },
+    "color": {
+      "field": "Species",
+      "type": "nominal",
+      "title": "Species"
+    },
+    "tooltip": [
+      { "field": "Species" },
+      { "field": "Flight_Duration_hours", "title": "Duration (hrs)" },
+      { "field": "Flight_Distance_km", "title": "Distance (km)" }
+    ]
+  },
+  "config": {
+    "axis": {
+      "labelFontSize": 11,
+      "titleFontSize": 12
+    },
+    "legend": {
+      "orient": "bottom"
+    }
+  }
+}

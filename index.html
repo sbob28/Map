@@ -2,16 +2,73 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Bird Migration Flow Map</title>
+    <title>Bird Migration Data Visualisation</title>
     <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        margin: 40px;
+        text-align: center;
+        background-color: #f9f9f9;
+        color: #222;
+      }
+      h2 {
+        color: #004d40;
+        margin-bottom: 0.5em;
+      }
+      h3 {
+        margin-top: 3em;
+        color: #00695c;
+      }
+      p {
+        max-width: 850px;
+        margin: auto;
+        line-height: 1.6;
+      }
+      .vis-container {
+        margin-top: 30px;
+      }
+    </style>
   </head>
+
   <body>
-    <h2>Bird Migration Flow Map - Paths that took more than 3 hours of flight duration</h2>
-    <div id="vis"></div>
+    <h2>Bird Migration Patterns Around the World</h2>
+    <p>
+      This visualisation explores bird migration paths across different species. The flow map
+      illustrates individual migration routes lasting more than 3 hours. Additional charts
+      summarise migration distances, flight characteristics, and reasons for migration.
+    </p>
+
+    <h3>Global Bird Migration</h3>
+    <div id="flowmap" class="vis-container"></div>
     <script type="text/javascript">
-      vegaEmbed('#vis', 'flowmap.json');
+      vegaEmbed("#flowmap", "flowmap.json");
     </script>
+
+    <h3>Average Flight Distance by Bird Species</h3>
+    <div id="barchart" class="vis-container"></div>
+    <script type="text/javascript">
+      vegaEmbed("#barchart", "barchart.json");
+    </script>
+
+    <h3>Flight Duration vs Distance by Species</h3>
+    <div id="scatter" class="vis-container"></div>
+    <script type="text/javascript">
+      vegaEmbed("#scatter", "scatter.json");
+    </script>
+
+    <h3>Reasons for Migration</h3>
+    <div id="donut" class="vis-container"></div>
+    <script type="text/javascript">
+      vegaEmbed("#donut", "donut.json");
+    </script>
+
+    <p style="margin-top:3em;">
+      <strong>Data source:</strong> Bird Migration Dataset (2025).  
+      <strong>Author:</strong> Srividya Bobba.  
+      <strong>Projection:</strong> Equal Earth.  
+    </p>
   </body>
 </html>

@@ -1,33 +1,35 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Bird Migration Flow Map (Flights over 3 hours)",
   "width": 900,
   "height": 500,
   "projection": {"type": "equalEarth"},
   "layer": [
     {
       "data": {"graticule": {"step": [30, 30]}},
-      "mark": {"type": "geoshape", "stroke": "black", "fill": null}
+      "mark": {"type": "geoshape", "stroke": "#bbb", "fill": null}
     },
     {
       "data": {
         "url": "https://raw.githubusercontent.com/vega/vega-datasets/main/data/world-110m.json",
         "format": {"type": "topojson", "feature": "countries"}
       },
-      "mark": {"type": "geoshape", "fill": "white", "stroke": "black"}
+      "mark": {"type": "geoshape", "fill": "#f7f7f7", "stroke": "#999"}
     },
     {
       "data": {"url": "bird_migration_dataset.csv"},
+      "transform": [{"filter": "datum.Flight_Duration_hours > 3"}],
       "params": [
         {
           "name": "speciesFilter",
-          "select": {"type": "point", "fields": ["Species"]}, 
+          "select": {"type": "point", "fields": ["Species"]},
           "bind": "legend"
         }
       ],
       "mark": {
         "type": "line",
-        "strokeOpacity": 1,
-        "strokeWidth": 1.5
+        "strokeWidth": 1.5,
+        "strokeOpacity": 0.8
       },
       "encoding": {
         "longitude": {"field": "Start_Longitude", "type": "quantitative"},
@@ -39,13 +41,33 @@
         "tooltip": [
           {"field": "Species"},
           {"field": "Migration_Reason"},
-          {"field": "Flight_Distance_km"},
-          {"field": "Flight_Duration_hours"}
+          {"field": "Flight_Distance_km", "title": "Distance (km)"},
+          {"field": "Flight_Duration_hours", "title": "Duration (hrs)"}
         ],
         "opacity": {
           "condition": {"param": "speciesFilter", "value": 1},
           "value": 0.1
         }
+      }
+    },
+    {
+      "data": {"url": "bird_migration_dataset.csv"},
+      "transform": [{"filter": "datum.Flight_Duration_hours > 3"}],
+      "mark": {"type": "circle", "size": 40, "color": "green", "opacity": 0.7},
+      "encoding": {
+        "longitude": {"field": "Start_Longitude"},
+        "latitude": {"field": "Start_Latitude"},
+        "tooltip": [{"field": "Species"}, {"field": "Migration_Reason"}]
+      }
+    },
+    {
+      "data": {"url": "bird_migration_dataset.csv"},
+      "transform": [{"filter": "datum.Flight_Duration_hours > 3"}],
+      "mark": {"type": "circle", "size": 40, "color": "red", "opacity": 0.7},
+      "encoding": {
+        "longitude": {"field": "End_Longitude"},
+        "latitude": {"field": "End_Latitude"},
+        "tooltip": [{"field": "Species"}, {"field": "Migration Reason"}]
       }
     }
   ]
