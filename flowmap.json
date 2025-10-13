@@ -1,9 +1,14 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": "Bird Migration Flow Map (Flights over 3 hours)",
+  "background": "transparent",
+  "title": "Bird Migration Flow Map (Flights over 70 hours, High Observation Quality)",
   "width": 900,
   "height": 500,
   "projection": {"type": "equalEarth"},
+  "params": [
+    {"name": "speciesFilter", "value": null},
+    {"name": "reasonFilter", "value": null}
+  ],
   "layer": [
     {
       "data": {"graticule": {"step": [30, 30]}},
@@ -16,43 +21,48 @@
       },
       "mark": {"type": "geoshape", "fill": "#f7f7f7", "stroke": "#999"}
     },
+
     {
-      "data": {"url": "bird_migration_dataset.csv"},
-      "transform": [{"filter": "datum.Flight_Duration_hours > 3"}],
-      "params": [
-        {
-          "name": "speciesFilter",
-          "select": {"type": "point", "fields": ["Species"]},
-          "bind": "legend"
-        }
+      "data": {"url": "bird_migration_data.csv"},
+      "transform": [
+        {"filter": "datum.Flight_Duration_hours > 70"},
+        {"filter": "datum.Observation_Quality == 'High'"},
+        {"filter": "speciesFilter == null || datum.Species == speciesFilter"},
+        {"filter": "reasonFilter == null || datum.Migration_Reason == reasonFilter"}
       ],
-      "mark": {
-        "type": "line",
-        "strokeWidth": 1.5,
-        "strokeOpacity": 0.8
-      },
+      "mark": {"type": "line", "strokeWidth": 1.5, "strokeOpacity": 0.8},
       "encoding": {
         "longitude": {"field": "Start_Longitude", "type": "quantitative"},
         "latitude": {"field": "Start_Latitude", "type": "quantitative"},
         "longitude2": {"field": "End_Longitude"},
         "latitude2": {"field": "End_Latitude"},
         "detail": {"field": "Bird_ID"},
-        "color": {"field": "Species", "type": "nominal", "legend": {"title": "Species (Click to filter)"}},
+        "color": {
+          "field": "Species",
+          "type": "nominal",
+          "scale": {
+            "domain": ["Warbler", "Eagle", "Stork", "Hawk", "Crane", "Goose", "Swallow"],
+            "range": ["#95D840FF", "#453781FF", "#20A387FF", "#fde725ff", "#440154FF", "#2D708EFF", "#55C667FF"]
+          },
+          "legend": null
+        },
         "tooltip": [
           {"field": "Species"},
-          {"field": "Migration_Reason"},
+          {"field": "Migration_Reason", "title": "Reason"},
           {"field": "Flight_Distance_km", "title": "Distance (km)"},
           {"field": "Flight_Duration_hours", "title": "Duration (hrs)"}
-        ],
-        "opacity": {
-          "condition": {"param": "speciesFilter", "value": 1},
-          "value": 0.1
-        }
+        ]
       }
     },
+
     {
-      "data": {"url": "bird_migration_dataset.csv"},
-      "transform": [{"filter": "datum.Flight_Duration_hours > 3"}],
+      "data": {"url": "bird_migration_data.csv"},
+      "transform": [
+        {"filter": "datum.Flight_Duration_hours > 70"},
+        {"filter": "datum.Observation_Quality == 'High'"},
+        {"filter": "speciesFilter == null || datum.Species == speciesFilter"},
+        {"filter": "reasonFilter == null || datum.Migration_Reason == reasonFilter"}
+      ],
       "mark": {"type": "circle", "size": 40, "color": "green", "opacity": 0.7},
       "encoding": {
         "longitude": {"field": "Start_Longitude"},
@@ -60,14 +70,23 @@
         "tooltip": [{"field": "Species"}, {"field": "Migration_Reason"}]
       }
     },
+
     {
-      "data": {"url": "bird_migration_dataset.csv"},
-      "transform": [{"filter": "datum.Flight_Duration_hours > 3"}],
+      "data": {"url": "bird_migration_data.csv"},
+      "transform": [
+        {"filter": "datum.Flight_Duration_hours > 70"},
+        {"filter": "datum.Observation_Quality == 'High'"},
+        {"filter": "speciesFilter == null || datum.Species == speciesFilter"},
+        {"filter": "reasonFilter == null || datum.Migration_Reason == reasonFilter"}
+      ],
       "mark": {"type": "circle", "size": 40, "color": "red", "opacity": 0.7},
       "encoding": {
         "longitude": {"field": "End_Longitude"},
         "latitude": {"field": "End_Latitude"},
-        "tooltip": [{"field": "Species"}, {"field": "Migration Reason"}]
+        "tooltip": [
+          {"field": "Species"},
+          {"field": "Migration_Reason", "title": "Reason"}
+        ]
       }
     }
   ]

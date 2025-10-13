@@ -1,53 +1,137 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": {
-    "text": "Flight Duration vs Distance by Species",
-    "subtitle": "Most birds fly between 1000–4000 km over 20–80 hours — patterns vary by species"
-  },
+  "background": "transparent",
+  "title": {"text": "Bird Migration Analysis"},
   "data": { "url": "bird_migration_data.csv" },
-  "transform": [
+  "resolve": {
+    "legend": {"color": "independent"}
+  },
+  "vconcat": [
     {
-      "filter": "datum.Flight_Duration_hours > 0"
+      "title": {
+        "text": "Flight Duration vs Distance by Species",
+        "subtitle": "Click a species in the legend to filter"
+      },
+      "transform": [
+        {"filter": "datum.Flight_Duration_hours > 0"},
+        {"filter": "datum.Observation_Quality == 'High'"}
+      ],
+      "layer": [
+        {
+          "params": [
+            {
+              "name": "speciesFilter",
+              "select": {"type": "point", "fields": ["Species"]},
+              "bind": "legend"
+            }
+          ],
+          "mark": {
+            "type": "circle",
+            "opacity": 0.6,
+            "size": 40,
+            "stroke": "black",
+            "strokeWidth": 0.2
+          },
+          "encoding": {
+            "x": {
+              "field": "Flight_Duration_hours",
+              "type": "quantitative",
+              "title": "Flight Duration (hours)",
+              "scale": {"domain": [0, 95]}
+            },
+            "y": {
+              "field": "Flight_Distance_km",
+              "type": "quantitative",
+              "title": "Flight Distance (km)",
+              "scale": {"domain": [0, 5000]}
+            },
+            "color": {
+              "field": "Species",
+              "type": "nominal",
+              "scale": {"scheme": "viridis"},
+              "title": "Species"
+            },
+            "opacity": {
+              "condition": {"param": "speciesFilter", "value": 1},
+              "value": 0.1
+            },
+            "tooltip": [
+              {"field": "Species"},
+              {"field": "Flight_Duration_hours", "title": "Duration (hrs)"},
+              {"field": "Flight_Distance_km", "title": "Distance (km)"},
+              {"field": "Weather_Condition", "title": "Weather"}
+            ]
+          }
+        },
+        {
+          "transform": [
+            {"filter": {"param": "speciesFilter", "empty": false}},
+            {
+              "aggregate": [
+                {"op": "mean", "field": "Flight_Duration_hours", "as": "meanDuration"},
+                {"op": "mean", "field": "Flight_Distance_km", "as": "meanDistance"}
+              ],
+              "groupby": ["Species"]
+            }
+          ],
+          "layer": [
+            {
+              "mark": {"type": "rule", "color": "black", "size": 2, "strokeDash": [4, 4]},
+              "encoding": {"x": {"field": "meanDuration", "type": "quantitative"}}
+            },
+            {
+              "mark": {"type": "rule", "color": "black", "size": 2, "strokeDash": [4, 4]},
+              "encoding": {"y": {"field": "meanDistance", "type": "quantitative"}}
+            },
+            {
+              "mark": {"type": "text", "align": "left", "baseline": "bottom", "dx": 5, "dy": -5, "fontSize": 12, "fontWeight": "bold"},
+              "encoding": {
+                "x": {"field": "meanDuration", "type": "quantitative"},
+                "y": {"value": 0},
+                "text": {"field": "meanDuration", "type": "quantitative", "format": ".1f"}
+              }
+            },
+            {
+              "mark": {"type": "text", "align": "left", "baseline": "bottom", "dx": 5, "dy": -5, "fontSize": 12, "fontWeight": "bold"},
+              "encoding": {
+                "x": {"value": 0},
+                "y": {"field": "meanDistance", "type": "quantitative"},
+                "text": {"field": "meanDistance", "type": "quantitative", "format": ".1f"}
+              }
+            }
+          ]
+        }
+      ],
+      "config": {
+        "axis": {"labelFontSize": 11, "titleFontSize": 12}
+      }
+    },
+
+    {
+      "title": {
+        "text": "Weather Conditions (Filtered by Species)",
+        "subtitle": "Linked to species selection above"
+      },
+      "transform": [
+        {"filter": {"param": "speciesFilter"}},
+        {"filter": "datum.Observation_Quality == 'High'"}
+      ],
+      "mark": {"type": "bar", "cornerRadius": 3, "color": "#002b4a"}, 
+      "encoding": {
+        "x": {"aggregate": "count", "title": "Number of Flights"},
+        "y": {
+          "field": "Weather_Condition",
+          "type": "nominal",
+          "title": "Weather Condition",
+          "sort": "-x"
+        },
+        "tooltip": [
+          {"aggregate": "count", "title": "Flights"},
+          {"field": "Weather_Condition", "title": "Weather"}
+        ]
+      },
+      "height": 100,
+      "width": 400
     }
-  ],
-  "mark": {
-    "type": "circle",
-    "opacity": 0.6,
-    "size": 40,
-    "stroke": "black",
-    "strokeWidth": 0.2
-  },
-  "encoding": {
-    "x": {
-      "field": "Flight_Duration_hours",
-      "type": "quantitative",
-      "title": "Flight Duration (hours)",
-      "scale": { "domain": [0, 95] }
-    },
-    "y": {
-      "field": "Flight_Distance_km",
-      "type": "quantitative",
-      "title": "Flight Distance (km)",
-      "scale": { "domain": [0, 5000] }
-    },
-    "color": {
-      "field": "Species",
-      "type": "nominal",
-      "title": "Species"
-    },
-    "tooltip": [
-      { "field": "Species" },
-      { "field": "Flight_Duration_hours", "title": "Duration (hrs)" },
-      { "field": "Flight_Distance_km", "title": "Distance (km)" }
-    ]
-  },
-  "config": {
-    "axis": {
-      "labelFontSize": 11,
-      "titleFontSize": 12
-    },
-    "legend": {
-      "orient": "bottom"
-    }
-  }
+  ]
 }

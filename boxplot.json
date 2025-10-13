@@ -1,0 +1,53 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "background": "transparent",
+  "autosize": {
+    "type": "fit",
+    "contains": "padding"
+  },
+  "width": "container",
+  "height": 400,
+  "title": {
+    "text": "Flight Distance Distribution per Species",
+    "subtitle": "Box plot highlights median, quartiles, and outliers"
+  },
+  "data": { "url": "bird_migration_data.csv" },
+  "transform": [
+    { "filter": "datum.Flight_Distance_km > 0" },
+    { "filter": "datum.Observation_Quality == 'High'" }
+  ],
+  "mark": {
+    "type": "boxplot",
+    "extent": 1.5
+  },
+  "encoding": {
+    "x": {
+      "field": "Species",
+      "type": "nominal",
+      "title": "Species"
+    },
+    "y": {
+      "field": "Flight_Distance_km",
+      "type": "quantitative",
+      "title": "Flight Distance (km)",
+      "scale": {"domain": [0, 4500]}
+    },
+    "color": {
+      "field": "Species",
+      "type": "nominal",
+      "scale": {"scheme": "viridis"},
+      "legend": null
+    },
+    "tooltip": [
+      {"field": "Species"},
+      {"field": "Flight_Distance_km", "title": "Flight Distance (km)"}
+    ]
+  },
+  "config": {
+    "view": {"stroke": "transparent"},
+    "axis": {
+      "labelFontSize": 11,
+      "titleFontSize": 12
+    }
+  }
+}

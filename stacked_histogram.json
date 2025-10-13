@@ -1,0 +1,46 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Stacked histogram showing the frequency of flock sizes (Observation_Counts) per species.",
+  "background": "transparent",
+  "data": {
+    "url": "bird_migration_data.csv"
+  },
+    "transform": [
+    {"filter": "datum.Observation_Quality == 'High'"},
+    {"filter": "datum.Observation_Counts > 0"},
+    {"filter": "datum.Migration_Success == 'Successful'"}
+  ],
+  "mark": "bar",
+  "width": 600,
+  "height": 400,
+  "encoding": {
+    "x": {
+      "field": "Flock_Size",
+      "type": "quantitative",
+      "bin": {"maxbins": 40, "step": 10},
+      "axis": {"title": "Flock Size"}
+    },
+    "y": {
+      "aggregate": "count",
+      "axis": {"title": "Frequency"},
+      "scale": {"domain": [0, 53]}
+    },
+    "color": {
+      "field": "Species",
+      "scale": {"scheme": "viridis"},
+      "type": "nominal",
+
+      "legend": {"title": "Species"}
+    },
+    "tooltip": [
+      {"field": "Species", "type": "nominal"},
+      {"field": "Flock_Size", "type": "quantitative"},
+      {"aggregate": "count", "type": "quantitative", "title": "Frequency"}
+    ]
+  },
+  "config": {
+    "view": {"stroke": "transparent"},
+    "axis": {"labelFont": "Actor", "titleFont": "Signika Negative"},
+    "legend": {"labelFont": "Actor", "titleFont": "Signika Negative"}
+  }
+}
