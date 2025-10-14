@@ -1,46 +1,66 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "description": "Stacked histogram showing the frequency of flock sizes (Observation_Counts) per species.",
+  "description": "Stacked histogram showing the frequency of flock sizes per species, with dynamic migration reason filter and adaptive y-scale.",
   "background": "transparent",
-  "data": {
-    "url": "bird_migration_data.csv"
-  },
-    "transform": [
-    {"filter": "datum.Observation_Quality == 'High'"},
-    {"filter": "datum.Observation_Counts > 0"},
-    {"filter": "datum.Migration_Success == 'Successful'"}
+  "data": { "url": "bird_migration_data.csv" },
+
+  "params": [
+    {
+      "name": "histReasonFilter",
+      "value": "All",
+      "bind": {
+        "input": "select",
+        "options": ["All", "Breeding", "Avoid Predators", "Climate Change", "Feeding"],
+        "labels": ["All Reasons", "Breeding", "Avoid Predators", "Climate Change", "Feeding"],
+        "name": "Filter by Migration Reason: "
+      }
+    },
+    {
+      "name": "yDomain",
+      "expr": "histReasonFilter == 'All' ? [0, 53] : [0, 20]"
+    }
   ],
+
+  "transform": [
+    { "filter": "datum.Observation_Quality == 'High'" },
+    { "filter": "datum.Observation_Counts > 0" },
+    { "filter": "datum.Migration_Success == 'Successful'" },
+    { "filter": "histReasonFilter == 'All' || datum.Migration_Reason == histReasonFilter" }
+  ],
+
   "mark": "bar",
   "width": 600,
   "height": 400,
+
   "encoding": {
     "x": {
       "field": "Flock_Size",
       "type": "quantitative",
-      "bin": {"maxbins": 40, "step": 10},
-      "axis": {"title": "Flock Size"}
+      "bin": { "maxbins": 40, "step": 10 },
+      "axis": { "title": "Flock Size" }
     },
     "y": {
       "aggregate": "count",
-      "axis": {"title": "Frequency"},
-      "scale": {"domain": [0, 53]}
+      "axis": { "title": "Frequency" },
+      "scale": { "domain": { "signal": "yDomain" } }
     },
     "color": {
       "field": "Species",
-      "scale": {"scheme": "viridis"},
       "type": "nominal",
-
-      "legend": {"title": "Species"}
+      "scale": { "scheme": "set2" },
+      "legend": { "title": "Species" }
     },
     "tooltip": [
-      {"field": "Species", "type": "nominal"},
-      {"field": "Flock_Size", "type": "quantitative"},
-      {"aggregate": "count", "type": "quantitative", "title": "Frequency"}
+      { "field": "Species", "type": "nominal" },
+      { "field": "Migration_Reason", "title": "Reason" },
+      { "field": "Flock_Size", "type": "quantitative" },
+      { "aggregate": "count", "type": "quantitative", "title": "Frequency" }
     ]
   },
+
   "config": {
-    "view": {"stroke": "transparent"},
-    "axis": {"labelFont": "Actor", "titleFont": "Signika Negative"},
-    "legend": {"labelFont": "Actor", "titleFont": "Signika Negative"}
+    "view": { "stroke": "transparent" },
+    "axis": { "labelFont": "Actor", "titleFont": "Signika Negative" },
+    "legend": { "labelFont": "Actor", "titleFont": "Signika Negative" }
   }
 }

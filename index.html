@@ -2,147 +2,235 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Bird Migration Data Visualisation</title>
+  <title>Wings Across the World: Why Birds Migrate</title>
   <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
   <link href="https://fonts.googleapis.com/css2?family=Actor&family=Signika+Negative:wght@400;600&family=Sigmar+One&display=swap" rel="stylesheet">
 
   <style>
-    body { font-family: "Actor", sans-serif; margin: 40px; background-color: #f9f9f9; color: #222; text-align: center; }
-    h2 { font-family: "Sigmar One", cursive; color: #004d40; margin-bottom: 0.3em; position: relative; font-size: 4rem; display: inline-block; }
-    h3 { font-family: "Signika Negative", sans-serif; margin-top: 3em; font-size: 3rem; color: #00695c; }
-    h4 { font-family: "Signika Negative", sans-serif; color: #004d40; margin-bottom: 0.5em; }
-    p { max-width: 850px; margin: auto; line-height: 1.6; font-family: "Actor", sans-serif; }
-
-    #bird { position: absolute; width: 130px; top: -20px; left: -80px; animation: flyIn 4s ease-in-out forwards, flap 1.6s ease-in-out 4s infinite; transform-origin: center bottom; }
-    @keyframes flyIn { 0% { transform: translateX(-200px) translateY(-60px) rotate(-20deg); opacity:0;} 40% { opacity:1; transform:translateX(100px) translateY(-100px) rotate(10deg);} 70% { transform:translateX(220px) translateY(-50px) rotate(0deg);} 100% { transform:translateX(250px) translateY(0) rotate(0deg);} }
-    @keyframes flap { 0%,100%{transform:translateX(250px) translateY(0) rotate(0deg) scaleY(1);} 50%{transform:translateX(250px) translateY(-4px) rotate(-2deg) scaleY(0.95);} }
-
-    .vis-container { margin: 30px auto; width: 100%; max-width: 1200px; padding: 20px; background: rgba(255,255,255,0.05); border-radius:15px; box-shadow:0 6px 15px rgba(0,0,0,0.08); transition: transform 0.2s, box-shadow 0.2s; }
-    .chart-row { display:flex; justify-content:center; align-items:flex-start; gap:25px; flex-wrap:wrap; margin-top:20px; }
-    .flowmap-wrapper { display:flex; justify-content:center; align-items:flex-start; gap:20px; margin:20px auto; max-width:1300px; }
-    #flowmap { flex:1 1 900px; height:600px; }
-    #flowmap-controls { width:250px; background:#ffffffc9; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,0.1); padding:15px 20px; text-align:left; font-family:"Actor"; display:flex; flex-direction:column; gap:12px; }
-    #flowmap-controls h4 { font-family:"Signika Negative"; margin-bottom:10px; color:#004d40; text-align:center; }
-    #flowmap-controls p { font-size:0.95rem; margin-bottom:6px; }
-    #barchart-container, #boxplot-container { flex:1 1 550px; max-width:600px; height:500px; display:flex; flex-direction:column; justify-content:center; }
-    #barchart, #boxplot { flex:1; }
-    #histogram {
-      flex: 1 1 800px;
-      max-width: 900px;
-      height: 500px;
-      margin: 0 auto;
+    body {
+      font-family: "Actor", sans-serif;
+      margin: 0;
+      background-color: #fafafa;
+      text-align: center;
+      padding: 10px; 
     }
-    #scatter { height:500px; }
-    @media(max-width:900px){ .flowmap-wrapper{flex-direction:column; align-items:center;} #flowmap-controls{width:90%;} }
-    @media(max-width:800px){ .chart-row{flex-direction:column;} }
+
+    .page-container {
+      max-width: 1200px;
+      margin: auto;
+      background: #ffffff;
+      padding: 30px;
+
+      border: 30px solid #004d40; 
+      border-radius: 20px; 
+    }
+
+    h2 {
+      font-family: "Sigmar One", cursive;
+      color: #004d40;
+      margin-bottom: 0.3em;
+      font-size: 3.5rem;
+    }
+    h3 {
+      font-family: "Signika Negative", sans-serif;
+      margin-top: 2em;
+      font-size: 2rem;
+      color: #00695c;
+    }
+    h4 {
+      font-family: "Signika Negative", sans-serif;
+      color: #004d40;
+      margin-bottom: 0.5em;
+    }
+    p {
+      max-width: 850px;
+      margin: 0.5em auto;
+      line-height: 1.6;
+      font-size: 1.2rem;
+      color: #333;
+    }
+
+    #bird {
+      width: 200px;
+      animation: flyIn 5s ease-in forwards, flap 5s ease-in 10s infinite;
+      transform-origin: center top;
+    }
+    @keyframes flyIn {
+      0% { transform: translateX(-200px) translateY(-60px) rotate(-20deg); opacity:0; }
+    }
+    @keyframes flap {
+      0%,100% {transform:translateY(0) rotate(0deg) scaleY(1);}
+    }
+
+    .chart { margin: 40px auto; }
+
+    .flowmap-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 0px;
+      margin-top: 0px;
+      flex-wrap: wrap;
+    }
+
+    #flowmap { flex: 1 1 850px; height: 550px; }
+    #flowmap-controls {
+      width: 230px;
+      text-align: left;
+      background: transparent;
+    }
+
+    select {
+      width: 100%;
+      padding: 1px;
+      border-radius: 10px;
+      border: 1px solid #aaa;
+      font-family: "Actor";
+      background: white;
+    }
+
+    #flowmap-legend div {
+      display: flex;
+      align-items: center;
+      margin-bottom: 6px;
+      cursor: pointer;
+    }
+    #flowmap-legend span {
+      width: 14px;
+      height: 14px;
+      display: inline-block;
+      border-radius: 3px;
+      margin-right: 8px;
+    }
+
+    footer {
+      margin-top: 4em;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    @media(max-width:900px){
+      .flowmap-wrapper { flex-direction: column; align-items: center; }
+      #flowmap-controls { width: 90%; text-align: center; }
+    }
   </style>
 </head>
 <body>
 
-<h2 id="main-title">
-  Bird Migration Patterns Around the World
-  <img src="bird_flying.gif" id="bird" alt="bird" />
-</h2>
+  <div class="page-container">
 
-<p>
-  This visualisation explores bird migration paths across different species. The flow map
-  illustrates individual migration routes lasting more than 3 hours. Additional charts
-  summarise migration distances, flight characteristics, and reasons for migration.
-</p>
+    <h2>
+      Wings Across the World: Why Birds Migrate
+      <br>
+      <img src="bird_flying.gif" id="bird" alt="bird" />
+    </h2>
 
-<h3>Global Bird Migration</h3>
-<div class="flowmap-wrapper">
-  <div id="flowmap" class="vis-container"></div>
-  <div id="flowmap-controls">
-    <h4>Filters & Legend</h4>
-    <p><strong>Migration Reason:</strong></p>
-    <div id="reason-toggle"></div>
-    <p style="margin-top:1em;"><strong>Species Legend:</strong></p>
-    <div id="flowmap-legend"></div>
+    <p>
+      Birds migrate for powerful reasons — to breed, to feed, to escape danger, or to follow the shifting seasons.  
+      Each reason drives a different kind of journey, shaping how far, how long, and with whom these creatures travel.  
+      This visual story explores how the <strong>motives behind migration</strong> influence the patterns we see in the skies.
+    </p>
+
+    <h3>Global Migration Routes</h3>
+    <p>
+      Migration begins with purpose.  
+      The flow map below traces long-distance journeys lasting over 70 hours, showing how migration reasons affect routes across the globe.  
+      Choose a reason to uncover how motivations — like breeding or escaping predators — influence each species’ path.
+    </p>
+
+    <div class="flowmap-wrapper">
+      <div id="flowmap" class="chart"></div>
+      <div id="flowmap-controls">
+        <h4>Filter by Migration Reason</h4>
+        <div id="reason-toggle"></div>
+        <p style="margin-top:1em;"><strong>Species Legend:</strong></p>
+        <div id="flowmap-legend"></div>
+      </div>
+    </div>
+
+    <h3>How Distance Varies by Reason</h3>
+    <p>
+      Not all journeys are equal.  
+      Some migration reasons demand long intercontinental flights, while others involve shorter regional movements.  
+      The box plot compares flight distances for each species — revealing how purpose shapes endurance and travel range.
+    </p>
+    <div id="boxplot" class="chart"></div>
+
+    <h3>Time in the Air</h3>
+    <p>
+      The length of each flight tells us how demanding migration can be.  
+      This scatter plot explores how flight duration relates to distance for different species — filtered by migration reason.  
+      It highlights how motivations like breeding or feeding lead to distinct flight efficiencies and strategies.
+    </p>
+    <div id="scatter" class="chart"></div>
+
+    <h3>Travelling Together</h3>
+    <p>
+      Some reasons for migration encourage flocking — protection, cooperation, and shared routes.  
+      The histogram below shows how flock sizes change depending on the migration reason, 
+      uncovering patterns of social behaviour during successful journeys.
+    </p>
+    <div id="histogram" class="chart"></div>
+
+    <footer>
+      <strong>Data source:</strong> https://www.kaggle.com/datasets/sahirmaharajj/bird-migration-dataset-data-visualization-eda |
+      <strong>Story & Visualisation:</strong> Srividya Bobba |
+      <strong>Projection:</strong> Equal Earth
+    </footer>
+
   </div>
-</div>
 
-<h3>Average Flight Distance & Distribution by Species</h3>
-  <div class="vis-container" id="boxplot-container">
-    <div id="boxplot"></div>
-  </div>
-</div>
+  <script>
+    let flowmapView, boxplotView, scatterView, histogramView;
 
-<h3>Flight Duration vs Distance by Species</h3>
-<div class="chart-row">
-  <div id="scatter" class="vis-container" style="flex: 0 0 50%;"></div>
-  <!-- <div id="extra-container" class="vis-container" style="flex: 0 0 50%;"> -->
-  </div>
-</div>
+    // Dropdown for migration reasons
+    const reasons = ["All Reasons", "Breeding", "Avoid Predators", "Climate Change", "Feeding"];
+    const dropdown = document.createElement("select");
+    reasons.forEach(r => {
+      const option = document.createElement("option");
+      option.value = r === "All Reasons" ? "" : r;
+      option.textContent = r;
+      dropdown.appendChild(option);
+    });
+    document.getElementById("reason-toggle").appendChild(dropdown);
 
-<h3>Flock Size Distribution per Species</h3>
-<div class="chart-row">
-  <div id="histogram" class="vis-container"></div>
-</div>
-
-<p style="margin-top:3em;">
-  <strong>Data source:</strong> Bird Migration Dataset (2025).  
-  <strong>Author:</strong> Srividya Bobba.  
-  <strong>Projection:</strong> Equal Earth.  
-</p>
-
-<script>
-vegaEmbed("#flowmap", "flowmap.json", {renderer: "canvas"}).then(result => {
-  const view = result.view;
-
-  const reasons = ["All Reasons", "Breeding", "Avoid Predators", "Climate Change", "Feeding"];
-  const dropdown = document.createElement("select");
-  dropdown.style.width = "100%";
-  dropdown.style.padding = "6px";
-  dropdown.style.borderRadius = "6px";
-  dropdown.style.border = "1px solid #aaa";
-  dropdown.style.fontFamily = "Actor";
-  reasons.forEach(r => {
-    const option = document.createElement("option");
-    option.value = r === "All Reasons" ? "" : r;
-    option.textContent = r;
-    dropdown.appendChild(option);
-  });
-  document.getElementById("reason-toggle").appendChild(dropdown);
-
-  dropdown.addEventListener("change", e => {
-    const val = e.target.value;
-    view.signal("reasonFilter", val || null).run();
-  });
-
-  const species = ["Warbler", "Eagle", "Stork", "Hawk", "Crane", "Goose", "Swallow"]; // replace with dynamic if needed
-  const colorScale = ["#95D840FF", "#453781FF"," #20A387FF", "#fde725ff", "#440154FF", "#2D708EFF", "#55C667FF"];
-  let selectedSpecies = null;
-  const legendDiv = document.getElementById("flowmap-legend");
-
-  species.forEach((s,i) => {
-    const item = document.createElement("div");
-    item.style.display="flex";
-    item.style.alignItems="center";
-    item.style.marginBottom="4px";
-    item.style.cursor="pointer";
-    item.innerHTML = `<span style="width:14px;height:14px;background-color:${colorScale[i%colorScale.length]};display:inline-block;border-radius:3px;margin-right:8px;"></span>${s}`;
-
-    item.addEventListener("click", () => {
-      if(selectedSpecies === s){
-        selectedSpecies = null;
-        view.signal("speciesFilter", null).run();
-      } else {
-        selectedSpecies = s;
-        view.signal("speciesFilter", s).run();
-      }
+    dropdown.addEventListener("change", e => {
+      const val = e.target.value || null;
+      if(flowmapView) flowmapView.signal("reasonFilter", val).run();
+      if(boxplotView) boxplotView.signal("reasonFilter", val).run();
+      if(scatterView) scatterView.signal("reasonFilter", val).run();
+      if(histogramView) histogramView.signal("reasonFilter", val).run();
     });
 
-    legendDiv.appendChild(item);
-  });
-});
+    // Flow map
+    vegaEmbed("#flowmap", "flowmap.json", {renderer: "canvas"}).then(result => {
+      flowmapView = result.view;
+      const species = ["Warbler", "Eagle", "Stork", "Hawk", "Crane", "Goose", "Swallow"];
+      const colorScale = ["#66c2a5", "#fc8d62", "#8da0cb", "#e78ac3", "#a6d854", "#ffd92f", "#e5c494"];
+      let selectedSpecies = null;
+      const legendDiv = document.getElementById("flowmap-legend");
 
-vegaEmbed("#boxplot", "boxplot.json", {renderer: "canvas"});
-vegaEmbed("#scatter", "scatter.json", {renderer: "canvas"});
-vegaEmbed("#histogram", "stacked_histogram.json", {renderer: "canvas"});
-</script>
+      species.forEach((s,i) => {
+        const item = document.createElement("div");
+        item.innerHTML = `<span style="background-color:${colorScale[i]}"></span>${s}`;
+        item.addEventListener("click", () => {
+          if(selectedSpecies === s){
+            selectedSpecies = null;
+            flowmapView.signal("speciesFilter", null).run();
+          } else {
+            selectedSpecies = s;
+            flowmapView.signal("speciesFilter", s).run();
+          }
+        });
+        legendDiv.appendChild(item);
+      });
+    });
 
+    vegaEmbed("#boxplot", "boxplot.json", {renderer: "canvas"}).then(result => { boxplotView = result.view; });
+    vegaEmbed("#scatter", "scatter.json", {renderer: "canvas"}).then(result => { scatterView = result.view; });
+    vegaEmbed("#histogram", "stacked_histogram.json", {renderer: "canvas"}).then(result => { histogramView = result.view; });
+  </script>
 </body>
 </html>

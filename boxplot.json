@@ -1,25 +1,34 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "background": "transparent",
-  "autosize": {
-    "type": "fit",
-    "contains": "padding"
-  },
-  "width": "container",
+  "autosize": {"type": "fit", "contains": "padding"},
+  "width": 600,
   "height": 400,
   "title": {
     "text": "Flight Distance Distribution per Species",
     "subtitle": "Box plot highlights median, quartiles, and outliers"
   },
-  "data": { "url": "bird_migration_data.csv" },
-  "transform": [
-    { "filter": "datum.Flight_Distance_km > 0" },
-    { "filter": "datum.Observation_Quality == 'High'" }
+  "data": {"url": "bird_migration_data.csv"},
+  "params": [
+    {
+      "name": "boxReasonFilter",
+      "value": "All",
+      "bind": {
+        "input": "select",
+        "options": ["All", "Breeding", "Avoid Predators", "Climate Change", "Feeding"],
+        "labels": ["All Reasons", "Breeding", "Avoid Predators", "Climate Change", "Feeding"],
+        "name": "Filter by Migration Reason: "
+      }
+    }
   ],
-  "mark": {
-    "type": "boxplot",
-    "extent": 1.5
-  },
+  "transform": [
+    {"filter": "datum.Flight_Distance_km > 0"},
+    {"filter": "datum.Observation_Quality == 'High'"},
+    {
+      "filter": "boxReasonFilter == 'All' || datum.Migration_Reason == boxReasonFilter"
+    }
+  ],
+  "mark": {"type": "boxplot", "extent": 1.5},
   "encoding": {
     "x": {
       "field": "Species",
@@ -35,19 +44,17 @@
     "color": {
       "field": "Species",
       "type": "nominal",
-      "scale": {"scheme": "viridis"},
+      "scale": {"scheme": "set2"},
       "legend": null
     },
     "tooltip": [
       {"field": "Species"},
+      {"field": "Migration_Reason", "title": "Reason"},
       {"field": "Flight_Distance_km", "title": "Flight Distance (km)"}
     ]
   },
   "config": {
     "view": {"stroke": "transparent"},
-    "axis": {
-      "labelFontSize": 11,
-      "titleFontSize": 12
-    }
+    "axis": {"labelFontSize": 11, "titleFontSize": 12}
   }
 }

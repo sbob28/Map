@@ -2,9 +2,9 @@
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "background": "transparent",
   "title": "Bird Migration Flow Map (Flights over 70 hours, High Observation Quality)",
-  "width": 900,
-  "height": 500,
-  "projection": {"type": "equalEarth"},
+  "width": 800,
+  "height": 400,
+  "projection": {"type": "naturalEarth1"},
   "params": [
     {"name": "speciesFilter", "value": null},
     {"name": "reasonFilter", "value": null}
@@ -21,7 +21,6 @@
       },
       "mark": {"type": "geoshape", "fill": "#f7f7f7", "stroke": "#999"}
     },
-
     {
       "data": {"url": "bird_migration_data.csv"},
       "transform": [
@@ -42,7 +41,7 @@
           "type": "nominal",
           "scale": {
             "domain": ["Warbler", "Eagle", "Stork", "Hawk", "Crane", "Goose", "Swallow"],
-            "range": ["#95D840FF", "#453781FF", "#20A387FF", "#fde725ff", "#440154FF", "#2D708EFF", "#55C667FF"]
+            "range": ["#66c2a5", "#fc8d62", "#8da0cb", "#e78ac3", "#a6d854", "#ffd92f", "#e5c494"]
           },
           "legend": null
         },
@@ -54,7 +53,6 @@
         ]
       }
     },
-
     {
       "data": {"url": "bird_migration_data.csv"},
       "transform": [
@@ -67,10 +65,12 @@
       "encoding": {
         "longitude": {"field": "Start_Longitude"},
         "latitude": {"field": "Start_Latitude"},
-        "tooltip": [{"field": "Species"}, {"field": "Migration_Reason"}]
+        "tooltip": [
+          {"field": "Species"},
+          {"field": "Migration_Reason", "title": "Reason"}
+        ]
       }
     },
-
     {
       "data": {"url": "bird_migration_data.csv"},
       "transform": [
