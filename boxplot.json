@@ -28,31 +28,44 @@
       "filter": "boxReasonFilter == 'All' || datum.Migration_Reason == boxReasonFilter"
     }
   ],
-  "mark": {"type": "boxplot", "extent": 1.5},
-  "encoding": {
-    "x": {
-      "field": "Species",
-      "type": "nominal",
-      "title": "Species"
+  "layer": [
+    {
+      "mark": {"type": "boxplot", "extent": 1.5},
+      "encoding": {
+        "x": {"field": "Species", "type": "nominal", "title": "Species"},
+        "y": {"field": "Flight_Distance_km", "type": "quantitative", "title": "Flight Distance (km)", "scale": {"domain": [0, 4500]}},
+        "color": {"field": "Species", "type": "nominal", "scale": {"scheme": "set2"}, "legend": null},
+        "tooltip": [
+          {"field": "Species"},
+          {"field": "Migration_Reason", "title": "Reason"},
+          {"field": "Flight_Distance_km", "title": "Flight Distance (km)"}
+        ]
+      }
     },
-    "y": {
-      "field": "Flight_Distance_km",
-      "type": "quantitative",
-      "title": "Flight Distance (km)",
-      "scale": {"domain": [0, 4500]}
-    },
-    "color": {
-      "field": "Species",
-      "type": "nominal",
-      "scale": {"scheme": "set2"},
-      "legend": null
-    },
-    "tooltip": [
-      {"field": "Species"},
-      {"field": "Migration_Reason", "title": "Reason"},
-      {"field": "Flight_Distance_km", "title": "Flight Distance (km)"}
-    ]
-  },
+    {
+      "transform": [
+        {
+          "aggregate": [
+            {"op": "median", "field": "Flight_Distance_km", "as": "MedianFlight"}
+          ],
+          "groupby": ["Species"]
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "center",
+        "baseline": "bottom",
+        "dy": -5,
+        "fontWeight": "bold",
+        "color": "black"
+      },
+      "encoding": {
+        "x": {"field": "Species", "type": "nominal"},
+        "y": {"field": "MedianFlight", "type": "quantitative"},
+        "text": {"field": "MedianFlight", "type": "quantitative", "format": ".0f"}
+      }
+    }
+  ],
   "config": {
     "view": {"stroke": "transparent"},
     "axis": {"labelFontSize": 11, "titleFontSize": 12}

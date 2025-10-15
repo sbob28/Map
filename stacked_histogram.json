@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "description": "Stacked histogram showing the frequency of flock sizes per species, with dynamic migration reason filter and adaptive y-scale.",
+  "description": "Stacked histogram showing the frequency of flock sizes per species, with dynamic migration reason filter and adaptive y-scale, including median lines per reason with label.",
   "background": "transparent",
   "data": { "url": "bird_migration_data.csv" },
 
@@ -28,35 +28,56 @@
     { "filter": "histReasonFilter == 'All' || datum.Migration_Reason == histReasonFilter" }
   ],
 
-  "mark": "bar",
-  "width": 600,
-  "height": 400,
-
-  "encoding": {
-    "x": {
-      "field": "Flock_Size",
-      "type": "quantitative",
-      "bin": { "maxbins": 40, "step": 10 },
-      "axis": { "title": "Flock Size" }
+  "layer": [
+    {
+      "mark": "bar",
+      "width": 600,
+      "height": 400,
+      "encoding": {
+        "x": {
+          "field": "Flock_Size",
+          "type": "quantitative",
+          "bin": { "maxbins": 40, "step": 10 },
+          "axis": { "title": "Flock Size" }
+        },
+        "y": {
+          "aggregate": "count",
+          "axis": { "title": "Frequency" },
+          "scale": { "domain": { "signal": "yDomain" } }
+        },
+        "color": {
+          "field": "Species",
+          "type": "nominal",
+          "scale": { "scheme": "set2" },
+          "legend": { "title": "Species" }
+        },
+        "tooltip": [
+          { "field": "Species", "type": "nominal" },
+          { "field": "Migration_Reason", "title": "Reason" },
+          { "field": "Flock_Size", "type": "quantitative" },
+          { "aggregate": "count", "type": "quantitative", "title": "Frequency" }
+        ]
+      }
     },
-    "y": {
-      "aggregate": "count",
-      "axis": { "title": "Frequency" },
-      "scale": { "domain": { "signal": "yDomain" } }
+    {
+      "mark": { "type": "rule", "color": "black", "size": 2 },
+      "encoding": {
+        "x": { "aggregate": "median", "field": "Flock_Size", "type": "quantitative" },
+        "strokeDash": { "value": [4, 2] },
+        "tooltip": [
+          { "aggregate": "median", "field": "Flock_Size", "title": "Median Flock Size" }
+        ]
+      }
     },
-    "color": {
-      "field": "Species",
-      "type": "nominal",
-      "scale": { "scheme": "set2" },
-      "legend": { "title": "Species" }
-    },
-    "tooltip": [
-      { "field": "Species", "type": "nominal" },
-      { "field": "Migration_Reason", "title": "Reason" },
-      { "field": "Flock_Size", "type": "quantitative" },
-      { "aggregate": "count", "type": "quantitative", "title": "Frequency" }
-    ]
-  },
+    {
+      "mark": { "type": "text", "align": "left", "baseline": "middle", "dx": 5, "dy": -5, "fontWeight": "bold" },
+      "encoding": {
+        "x": { "aggregate": "median", "field": "Flock_Size", "type": "quantitative" },
+        "y": { "value": 5 }, 
+        "text": { "value": "Median Flock Size" }
+      }
+    }
+  ],
 
   "config": {
     "view": { "stroke": "transparent" },

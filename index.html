@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Wings Across the World: Why Birds Migrate</title>
+  <title>Wings Across the World:
+     Why Birds Migrate</title>
   <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
@@ -22,7 +23,6 @@
       margin: auto;
       background: #ffffff;
       padding: 30px;
-
       border: 30px solid #004d40; 
       border-radius: 20px; 
     }
@@ -31,7 +31,7 @@
       font-family: "Sigmar One", cursive;
       color: #004d40;
       margin-bottom: 0.3em;
-      font-size: 3.5rem;
+      font-size: 3.2rem;
     }
     h3 {
       font-family: "Signika Negative", sans-serif;
@@ -64,14 +64,14 @@
       0%,100% {transform:translateY(0) rotate(0deg) scaleY(1);}
     }
 
-    .chart { margin: 40px auto; }
+    .chart { margin: 0px auto; }
 
     .flowmap-wrapper {
       display: flex;
       justify-content: center;
       align-items: flex-start;
       gap: 0px;
-      margin-top: 0px;
+      margin-top: 50px;
       flex-wrap: wrap;
     }
 
@@ -94,7 +94,7 @@
     #flowmap-legend div {
       display: flex;
       align-items: center;
-      margin-bottom: 6px;
+      margin-bottom: 0px;
       cursor: pointer;
     }
     #flowmap-legend span {
@@ -115,6 +115,19 @@
       .flowmap-wrapper { flex-direction: column; align-items: center; }
       #flowmap-controls { width: 90%; text-align: center; }
     }
+
+    .graph-guide, .graph-insights {
+      background-color: #f8f9f6;
+      border-left: 4px solid #2b5a3d;
+      padding: 1em;
+      margin: 1.5em 0;
+      border-radius: 0.75em;
+    }
+
+    .graph-guide h4, .graph-insights h4 {
+      margin-top: 0;
+      color: #2b5a3d;
+    }
   </style>
 </head>
 <body>
@@ -128,7 +141,7 @@
     </h2>
 
     <p>
-      Birds migrate for powerful reasons — to breed, to feed, to escape danger, or to follow the shifting seasons.  
+      Birds migrate for powerful reasons. To breed, to feed, to escape danger, or to follow the shifting seasons.  
       Each reason drives a different kind of journey, shaping how far, how long, and with whom these creatures travel.  
       This visual story explores how the <strong>motives behind migration</strong> influence the patterns we see in the skies.
     </p>
@@ -137,8 +150,17 @@
     <p>
       Migration begins with purpose.  
       The flow map below traces long-distance journeys lasting over 70 hours, showing how migration reasons affect routes across the globe.  
-      Choose a reason to uncover how motivations — like breeding or escaping predators — influence each species’ path.
+      Choose a reason to uncover how motivations (like breeding or escaping predators) influence each species’ path.
     </p>
+
+    <div class="graph-guide">
+      <h4>How to Read the Graph</h4>
+      <p>
+        This world map traces bird migration routes lasting over 70 hours.  
+        Each line connects the start (green) and end (red) of a journey.  
+        Use the dropdown to filter by <strong>migration reason</strong> and click on species names in the legend to highlight them.
+      </p>
+    </div>
 
     <div class="flowmap-wrapper">
       <div id="flowmap" class="chart"></div>
@@ -150,13 +172,41 @@
       </div>
     </div>
 
+    <div class="graph-insights">
+      <h4>Insights</h4>
+      <p>
+        The flow map highlights how <strong>geese and cranes</strong> follow long, predictable north–south routes  
+        aligned with seasonal shifts, while <strong>swallows</strong> and smaller species tend to move regionally.  
+        Feeding-related migrations often span continents, while breeding journeys are more localized.
+      </p>
+    </div>
+
     <h3>How Distance Varies by Reason</h3>
     <p>
       Not all journeys are equal.  
       Some migration reasons demand long intercontinental flights, while others involve shorter regional movements.  
       The box plot compares flight distances for each species — revealing how purpose shapes endurance and travel range.
     </p>
+
+    <div class="graph-guide">
+      <h4>How to Read the Graph</h4>
+      <p>
+        Each box represents the distribution of <strong>flight distances (km)</strong> for each bird species.  
+        The line inside shows the <strong>median distance</strong>, while dots mark <strong>outliers</strong>.  
+        Use the dropdown to filter by migration reason and observe how flight distances vary across motivations.
+      </p>
+    </div>
+
     <div id="boxplot" class="chart"></div>
+
+    <div class="graph-insights">
+      <h4>Insights</h4>
+      <p>
+        Larger species like <strong>eagles</strong> and <strong>storks</strong> tend to travel farther, especially during breeding migrations.  
+        Smaller birds, such as <strong>warblers</strong>, show shorter, variable distances — likely due to habitat fragmentation  
+        and diverse feeding zones.
+      </p>
+    </div>
 
     <h3>Time in the Air</h3>
     <p>
@@ -164,7 +214,25 @@
       This scatter plot explores how flight duration relates to distance for different species — filtered by migration reason.  
       It highlights how motivations like breeding or feeding lead to distinct flight efficiencies and strategies.
     </p>
+
+    <div class="graph-guide">
+      <h4>How to Read the Graph</h4>
+      <p>
+        This visualisation shows how <strong>flight duration and distance</strong> vary across bird species, with each point representing a single observation and colors indicating species. 
+        Click on a species in the legend to highlight it, view its average flight duration and distance with dashed lines, and see a breakdown of migration reasons in the bar chart below.
+      </p>
+    </div>
+
     <div id="scatter" class="chart"></div>
+
+    <div class="graph-insights">
+      <h4>Insights</h4>
+      <p>
+        Longer flights usually correspond to greater distances, showing clear species-level differences.  
+        <strong>Geese and cranes</strong> maintain long, efficient migrations, while <strong>warblers</strong> perform  
+        shorter, frequent flights — revealing distinct energy strategies.
+      </p>
+    </div>
 
     <h3>Travelling Together</h3>
     <p>
@@ -172,7 +240,25 @@
       The histogram below shows how flock sizes change depending on the migration reason, 
       uncovering patterns of social behaviour during successful journeys.
     </p>
+
+    <div class="graph-guide">
+      <h4>How to Read the Graph</h4>
+      <p>
+        This graph shows the distribution of <strong>flock sizes</strong> for different bird species, with colors representing species and bars showing the frequency of observations. 
+        Use the dropdown to filter by migration reason, and note the dashed line marking the median flock size for quick reference.
+      </p>
+    </div>
+
     <div id="histogram" class="chart"></div>
+
+    <div class="graph-insights">
+      <h4>Insights</h4>
+      <p>
+        Birds migrating to <strong>feed or avoid predators</strong> often travel in larger groups,  
+        while <strong>breeding migrations</strong> are more solitary or in pairs.  
+        This pattern suggests strong social coordination when collective survival benefits arise.
+      </p>
+    </div>
 
     <footer>
       <strong>Data source:</strong> https://www.kaggle.com/datasets/sahirmaharajj/bird-migration-dataset-data-visualization-eda |
@@ -185,7 +271,6 @@
   <script>
     let flowmapView, boxplotView, scatterView, histogramView;
 
-    // Dropdown for migration reasons
     const reasons = ["All Reasons", "Breeding", "Avoid Predators", "Climate Change", "Feeding"];
     const dropdown = document.createElement("select");
     reasons.forEach(r => {
@@ -204,7 +289,6 @@
       if(histogramView) histogramView.signal("reasonFilter", val).run();
     });
 
-    // Flow map
     vegaEmbed("#flowmap", "flowmap.json", {renderer: "canvas"}).then(result => {
       flowmapView = result.view;
       const species = ["Warbler", "Eagle", "Stork", "Hawk", "Crane", "Goose", "Swallow"];
